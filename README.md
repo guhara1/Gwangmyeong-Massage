@@ -11,7 +11,7 @@
 
 | 구분 | URL |
 |---|---|
-| 메인 | `/gwangmyeong-chuljangmassage/` |
+| 메인 | `/` (루트 도메인 = 메인페이지) |
 | 광명동 | `/gwangmyeong/gwangmyeong-dong-chuljangmassage/` |
 | 철산동 | `/gwangmyeong/cheolsan-dong-chuljangmassage/` |
 | 하안동 | `/gwangmyeong/haan-dong-chuljangmassage/` |
@@ -41,10 +41,14 @@ python3 build.py
 실행하면 각 페이지의 `index.html`, `sitemap.xml`, `robots.txt`가 생성되고
 description 80자 점검 결과가 출력됩니다.
 
-## 배포 전 변경 사항
+## 도메인 / 배포 (Cloudflare Pages)
 
-- `build.py`의 `SITE_URL`을 실제 도메인으로 교체한 뒤 다시 빌드하세요
-  (canonical·Open Graph·sitemap에 일괄 반영됩니다).
+- 도메인은 `https://gwangmyeong-massage.pages.dev` 기준입니다.
+  바꾸려면 `build.py`의 `SITE_URL`만 교체 후 다시 빌드하세요(canonical·OG·sitemap 일괄 반영).
+- **메인페이지는 루트 `/`** 입니다. 도메인을 누르면 바로 메인이 열립니다.
+  과거 슬러그 `/gwangmyeong-chuljangmassage/`는 `_redirects`로 루트(301)로 보냅니다.
+- 파비콘: `favicon.svg`, `favicon.ico`, `favicon-32.png`, `icon-180/192/512.png`,
+  PWA용 `site.webmanifest` 포함.
 - 실제 오프라인 사업장 주소가 없으므로 `LocalBusiness` 스키마는 사용하지 않습니다.
   주소가 확정되면 `build.py`의 JSON-LD에 추가할 수 있습니다.
 

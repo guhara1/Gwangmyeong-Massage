@@ -14,7 +14,7 @@ import html
 # ---------------------------------------------------------------------------
 # 사이트 공통 설정
 # ---------------------------------------------------------------------------
-SITE_URL = "https://example.com"          # 실제 도메인으로 교체
+SITE_URL = "https://gwangmyeong-massage.pages.dev"   # 실제 도메인
 BRAND = "간다GO"
 PHONE = "0508-202-4719"
 PHONE_TEL = "tel:0508-202-4719"
@@ -22,7 +22,7 @@ OUT = os.path.dirname(os.path.abspath(__file__))
 
 # 상단 메뉴 (URL은 사이트 루트 기준)
 NAV = [
-    ("광명 출장마사지 안내", "/gwangmyeong-chuljangmassage/"),
+    ("광명 출장마사지 안내", "/"),
     ("지역별 안내", [
         ("광명동", "/gwangmyeong/gwangmyeong-dong-chuljangmassage/"),
         ("철산동", "/gwangmyeong/cheolsan-dong-chuljangmassage/"),
@@ -83,7 +83,7 @@ def jsonld(page_title, description, url, crumbs):
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": BRAND,
-        "url": SITE_URL + "/gwangmyeong-chuljangmassage/",
+        "url": SITE_URL + "/",
         "telephone": PHONE,
         "areaServed": "경기도 광명시",
         "contactPoint": {
@@ -101,7 +101,7 @@ def jsonld(page_title, description, url, crumbs):
         "description": description,
         "url": SITE_URL + url,
         "inLanguage": "ko-KR",
-        "isPartOf": {"@type": "WebSite", "name": f"{BRAND} 광명 출장마사지", "url": SITE_URL + "/gwangmyeong-chuljangmassage/"},
+        "isPartOf": {"@type": "WebSite", "name": f"{BRAND} 광명 출장마사지", "url": SITE_URL + "/"},
     }
     breadcrumb = {
         "@context": "https://schema.org",
@@ -157,6 +157,12 @@ PAGE_TPL = """<!DOCTYPE html>
 <meta property="og:url" content="{canonical}">
 <meta property="og:site_name" content="{brand} 광명 출장마사지">
 <meta property="og:locale" content="ko_KR">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/icon-180.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0d6e5a">
 <link rel="stylesheet" href="/css/style.css">
 {jsonld}
 </head>
@@ -164,7 +170,7 @@ PAGE_TPL = """<!DOCTYPE html>
 <a class="skip" href="#main">본문 바로가기</a>
 <header class="site-header">
   <div class="bar">
-    <a class="logo" href="/gwangmyeong-chuljangmassage/">{brand}<span>광명 출장마사지 · 홈타이</span></a>
+    <a class="logo" href="/">{brand}<span>광명 출장마사지 · 홈타이</span></a>
     <a class="header-phone" href="{phone_tel}">전화예약 {phone}</a>
     <button class="menu-toggle" type="button" aria-label="메뉴 열기" aria-expanded="false">메뉴</button>
   </div>
@@ -192,6 +198,10 @@ PAGE_TPL = """<!DOCTYPE html>
     <p class="foot-note">본 사이트는 합법적인 방문형 마사지 예약 안내 사이트입니다. 불법·선정적 서비스를 제공하거나 알선하지 않습니다.</p>
   </div>
 </footer>
+<a class="float-call" href="{phone_tel}" aria-label="전화예약 {phone}">
+  <span class="ico" aria-hidden="true">📞</span>
+  <span class="txt"><b>전화예약</b>{phone}</span>
+</a>
 <script>
 (function(){{
   var t=document.querySelector('.menu-toggle'),n=document.querySelector('.site-nav');
@@ -264,7 +274,7 @@ def main():
 
     # sitemap.xml
     urls = "".join(
-        f"  <url><loc>{esc(SITE_URL + pth)}</loc><changefreq>weekly</changefreq><priority>{'1.0' if pth=='/gwangmyeong-chuljangmassage/' else '0.8'}</priority></url>\n"
+        f"  <url><loc>{esc(SITE_URL + pth)}</loc><changefreq>weekly</changefreq><priority>{'1.0' if pth=='/' else '0.8'}</priority></url>\n"
         for pth in paths
     )
     sitemap = (

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """페이지별 메타데이터 + 본문(HTML). 각 페이지는 고유 생활권 설명을 사용한다."""
 
-HOME = "/gwangmyeong-chuljangmassage/"
+HOME = "/"
 
 
 def crumb(*items):
@@ -496,7 +496,7 @@ PAGES = [
 
 <h2>이용 시 유의사항</h2>
 <p>건강 상태나 특이사항이 있으면 예약 시 미리 알려주세요. 간다GO는 합법적인 방문형 관리 안내만 제공하며,
-불법·선정적 서비스는 제공하지 않습니다. 지역별 방문 기준은 <a href="/gwangmyeong-chuljangmassage/">메인 안내</a>에서 확인할 수 있습니다.</p>
+불법·선정적 서비스는 제공하지 않습니다. 지역별 방문 기준은 <a href="/">메인 안내</a>에서 확인할 수 있습니다.</p>
 """,
         "related": [
             ("예약 안내", "/reservation/"),
