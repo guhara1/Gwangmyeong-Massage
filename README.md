@@ -52,6 +52,18 @@ description 80자 점검 결과가 출력됩니다.
 - 실제 오프라인 사업장 주소가 없으므로 `LocalBusiness` 스키마는 사용하지 않습니다.
   주소가 확정되면 `build.py`의 JSON-LD에 추가할 수 있습니다.
 
+## 색인 가속 (네이버·구글·빙)
+
+`sitemap.xml`(lastmod) · `rss.xml`(네이버 RSS 제출) · `robots.txt`(Yeti 명시) ·
+IndexNow 키 파일을 빌드 시 자동 생성합니다. 즉시 통보 스크립트와 자동화 포함:
+
+```bash
+python3 indexnow.py                 # Bing·Naver·Yandex 즉시 통보
+python3 google_indexing.py          # 구글 Indexing API (서비스 계정 필요)
+```
+
+자세한 설정·자동화는 **[INDEXING.md](INDEXING.md)** 참고.
+
 ## SEO 적용 메모
 
 - 스키마: `WebPage` + `BreadcrumbList` + `Organization` (전 페이지)

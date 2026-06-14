@@ -23,6 +23,10 @@ PHONE = "0508-202-4719"
 PHONE_TEL = "tel:0508-202-4719"
 OUT = os.path.dirname(os.path.abspath(__file__))
 
+# IndexNow(빙·네이버·얀덱스 즉시 색인 통보) 인증 키 — 변경 금지(키 파일과 일치해야 함)
+INDEXNOW_KEY = "e88fb3ce6f6df267e9cd6add7b084730"
+BUILD_DATE = datetime.date.today().isoformat()
+
 # 상단 메뉴 (URL은 사이트 루트 기준)
 NAV = [
     ("광명 출장마사지 안내", "/"),
@@ -311,9 +315,12 @@ def main():
         flag = "OK " if len(d) <= 80 else "OVER"
         print(f"[{flag}] {len(d):>3}자  {p['path']}")
 
-    # sitemap.xml
+    # ---- sitemap.xml (lastmod 포함) ----
     urls = "".join(
-        f"  <url><loc>{esc(SITE_URL + pth)}</loc><changefreq>weekly</changefreq><priority>{'1.0' if pth=='/' else '0.8'}</priority></url>\n"
+        f"  <url><loc>{esc(SITE_URL + pth)}</loc>"
+        f"<lastmod>{BUILD_DATE}</lastmod>"
+        f"<changefreq>{'daily' if pth=='/' else 'weekly'}</changefreq>"
+        f"<priority>{'1.0' if pth=='/' else '0.8'}</priority></url>\n"
         for pth in paths
     )
     sitemap = (
@@ -324,16 +331,62 @@ def main():
     with open(os.path.join(OUT, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write(sitemap)
 
-    # robots.txt
+    # ---- rss.xml (네이버 서치어드바이저 RSS 제출용) ----
+    now = datetime.datetime.now(datetime.timezone.utc).strftime("%a, %d %b %Y %H:%M:%S +0000")
+    title_map = {p["path"]: (p["title"], p["description"]) for p in PAGES}
+    items = []
+    for pth in paths:
+        t, d = title_map[pth]
+        loc = SITE_URL + pth
+        items.append(
+            "    <item>\n"
+            f"      <title>{esc(t)}</title>\n"
+            f"      <link>{esc(loc)}</link>\n"
+            f"      <description>{esc(d)}</description>\n"
+            f"      <guid isPermaLink=\"true\">{esc(loc)}</guid>\n"
+            f"      <pubDate>{now}</pubDate>\n"
+            "    </item>\n"
+        )
+    rss = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n'
+        "  <channel>\n"
+        f"    <title>{esc(BRAND)} 광명 출장마사지 · 홈타이</title>\n"
+        f"    <link>{SITE_URL}/</link>\n"
+        f"    <description>광명시 방문형 마사지·홈타이 지역별 예약 안내</description>\n"
+        "    <language>ko</language>\n"
+        f"    <lastBuildDate>{now}</lastBuildDate>\n"
+        f'    <atom:link href="{SITE_URL}/rss.xml" rel="self" type="application/rss+xml" />\n'
+        f"{''.join(items)}"
+        "  </channel>\n"
+        "</rss>\n"
+    )
+    with open(os.path.join(OUT, "rss.xml"), "w", encoding="utf-8") as f:
+        f.write(rss)
+
+    # ---- IndexNow 키 파일 ----
+    with open(os.path.join(OUT, f"{INDEXNOW_KEY}.txt"), "w", encoding="utf-8") as f:
+        f.write(INDEXNOW_KEY + "\n")
+
+    # ---- robots.txt (네이버 Yeti·구글·빙 명시 허용 + 사이트맵) ----
     robots = (
+        "# 모든 검색엔진 전체 허용\n"
         "User-agent: *\n"
-        "Allow: /\n"
+        "Allow: /\n\n"
+        "User-agent: Googlebot\n"
+        "Allow: /\n\n"
+        "User-agent: Yeti\n"            # 네이버 크롤러
+        "Allow: /\n\n"
+        "User-agent: bingbot\n"
+        "Allow: /\n\n"
         f"Sitemap: {SITE_URL}/sitemap.xml\n"
+        f"Sitemap: {SITE_URL}/rss.xml\n"
     )
     with open(os.path.join(OUT, "robots.txt"), "w", encoding="utf-8") as f:
         f.write(robots)
 
     print(f"\n총 {len(paths)}개 페이지 생성 완료.")
+    print(f"sitemap.xml / rss.xml / robots.txt / {INDEXNOW_KEY}.txt 생성됨.")
 
 
 if __name__ == "__main__":

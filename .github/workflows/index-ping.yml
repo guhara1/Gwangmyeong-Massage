@@ -1,0 +1,52 @@
+name: 색인 통보 (IndexNow + Google)
+
+# 글을 올리거나(=푸시) 수동 실행 시, 검색엔진에 변경을 즉시 통보합니다.
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "**/index.html"
+      - "sitemap.xml"
+      - "rss.xml"
+      - "pages.py"
+      - "build.py"
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: "통보할 경로(공백 구분, 비우면 sitemap 전체)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 사이트맵/RSS 갱신
+        run: python3 build.py
+
+      # Cloudflare Pages 배포가 키 파일을 게시할 시간을 잠깐 확보
+      - name: 배포 대기
+        run: sleep 60
+
+      - name: IndexNow 통보 (Bing·Naver·Yandex)
+        run: python3 indexnow.py ${{ github.event.inputs.urls }}
+
+      # 구글 Indexing API는 서비스 계정 시크릿(GOOGLE_SA_JSON)이 있을 때만 실행
+      - name: Google Indexing API 통보
+        if: ${{ secrets.GOOGLE_SA_JSON != '' }}
+        env:
+          GOOGLE_SA_JSON: ${{ secrets.GOOGLE_SA_JSON }}
+        run: |
+          pip install --quiet google-auth requests
+          printf '%s' "$GOOGLE_SA_JSON" > /tmp/sa.json
+          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json
+          python3 google_indexing.py ${{ github.event.inputs.urls }}
