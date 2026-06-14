@@ -199,6 +199,9 @@ PAGE_TPL = """<!DOCTYPE html>
       <li><a href="/privacy/">개인정보 처리방침</a></li>
     </ul>
     <p class="foot-note">본 사이트는 합법적인 방문형 마사지 예약 안내 사이트입니다. 불법·선정적 서비스를 제공하거나 알선하지 않습니다.</p>
+    <a class="foot-build" href="https://t.me/googleseolab" target="_blank" rel="noopener noreferrer">
+      <span class="ico" aria-hidden="true">✦</span> 웹사이트 제작문의
+    </a>
   </div>
 </footer>
 <a class="float-call" href="{phone_tel}" aria-label="전화예약 {phone}">
