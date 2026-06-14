@@ -1,0 +1,96 @@
+/* 간다GO 광명 출장마사지 · 홈타이 SEO 사이트 */
+:root{
+  --bg:#0f1720;--panel:#15212e;--ink:#1f2933;--muted:#5b6b7b;
+  --line:#e2e8f0;--brand:#0d6e5a;--brand-d:#0a5446;--accent:#0ea47f;
+  --cta:#e8462d;--cta-d:#c8381f;--soft:#f4f7f9;--max:1080px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  color:var(--ink);background:#fff;line-height:1.75;font-size:16px;-webkit-text-size-adjust:100%}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:var(--max);margin:0 auto;padding:0 18px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{left:8px;top:8px;background:#fff;padding:8px 12px;z-index:100;border:2px solid var(--brand)}
+
+/* 헤더 */
+.site-header{position:sticky;top:0;z-index:50;background:var(--bg);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.bar{max-width:var(--max);margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{color:#fff;font-weight:800;font-size:20px;display:flex;flex-direction:column;line-height:1.1}
+.logo span{font-size:11px;font-weight:500;color:#9fb4c4;margin-top:2px}
+.header-phone{margin-left:auto;background:var(--cta);color:#fff;font-weight:700;padding:8px 14px;border-radius:8px;font-size:14px}
+.header-phone:hover{background:var(--cta-d);text-decoration:none}
+.menu-toggle{display:none;background:#22323f;color:#fff;border:0;border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer}
+
+/* 내비 */
+.site-nav{background:var(--panel)}
+.nav-list{max-width:var(--max);margin:0 auto;padding:0 8px;list-style:none;display:flex;flex-wrap:wrap}
+.nav-list>li{position:relative}
+.nav-list a,.nav-list button{color:#dbe6ef;background:none;border:0;font:inherit;font-size:14px;padding:12px 14px;display:block;cursor:pointer}
+.nav-list a:hover,.nav-list button:hover,.nav-list [aria-current="page"]{color:#fff;background:#1d2b39;text-decoration:none}
+.sub{list-style:none;margin:0;padding:6px 0;position:absolute;top:100%;left:0;min-width:200px;background:#fff;
+  border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.18);display:none;z-index:60}
+.has-sub:hover .sub,.has-sub.open .sub{display:block}
+.sub a{color:var(--ink);padding:9px 16px}
+.sub a:hover{background:var(--soft);color:var(--brand-d)}
+
+/* 본문 */
+main{padding:26px 0 50px}
+.breadcrumb{font-size:13px;color:var(--muted);margin:4px 0 18px}
+.breadcrumb a{color:var(--muted)}
+.breadcrumb .sep{margin:0 4px;color:#b6c2cd}
+h1{font-size:26px;line-height:1.35;margin:0 0 14px;letter-spacing:-.01em}
+h2{font-size:20px;margin:34px 0 10px;padding-top:6px;border-top:1px solid var(--line);color:var(--brand-d)}
+.lead{font-size:17px;background:var(--soft);border-left:4px solid var(--brand);padding:14px 16px;border-radius:0 10px 10px 0;color:#374550}
+p{margin:0 0 14px}
+
+/* 카드/리스트 */
+.card-list{list-style:none;padding:0;margin:14px 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.card-list a{display:block;border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fff;transition:.15s}
+.card-list a:hover{border-color:var(--accent);box-shadow:0 6px 18px rgba(14,164,127,.12);text-decoration:none;transform:translateY(-1px)}
+.card-list strong{display:block;color:var(--ink);font-size:16px}
+.card-list span{display:block;color:var(--muted);font-size:13px;margin-top:3px}
+.steps{padding-left:20px;margin:10px 0}
+.steps li{margin:6px 0}
+.bullet{padding-left:20px}
+.bullet li{margin:5px 0}
+.contact-phone{font-size:30px;font-weight:800;margin:6px 0 4px}
+.contact-phone a{color:var(--cta)}
+
+/* 관련 링크 */
+.related{margin:34px 0 0;background:var(--soft);border-radius:14px;padding:18px 20px}
+.related h2{margin:0 0 10px;border:0;padding:0;font-size:17px}
+.related-list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px 10px}
+.related-list a{background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:14px}
+.related-list a:hover{border-color:var(--accent);text-decoration:none}
+
+/* CTA */
+.cta{margin:24px 0 0;background:linear-gradient(135deg,var(--brand),var(--brand-d));color:#fff;border-radius:16px;padding:24px 22px;text-align:center}
+.cta-brand{font-size:15px;margin:0 0 6px;color:#cdeee5}
+.cta-phone{display:inline-block;color:#fff;font-size:30px;font-weight:800;letter-spacing:.02em}
+.cta-phone:hover{text-decoration:none;opacity:.92}
+.cta-note{font-size:13px;color:#d6f0e9;margin:10px 0 0}
+
+/* 푸터 */
+.site-footer{background:var(--bg);color:#aebccb;padding:30px 0;margin-top:10px;font-size:14px}
+.foot-brand{color:#fff;font-weight:700;margin:0 0 6px}
+.foot-phone{margin:0 0 14px}
+.foot-phone a{color:#7fe3cb;font-weight:700}
+.foot-links{list-style:none;padding:0;margin:0 0 14px;display:flex;flex-wrap:wrap;gap:8px 18px}
+.foot-links a{color:#aebccb}
+.foot-note{font-size:12px;color:#73838f;margin:0;line-height:1.6}
+
+@media(max-width:760px){
+  .menu-toggle{display:block;margin-left:auto;order:3}
+  .header-phone{margin-left:0;order:2}
+  .logo{order:1}
+  .site-nav{display:none}
+  .site-nav.open{display:block}
+  .nav-list{flex-direction:column;padding:0}
+  .nav-list>li{border-bottom:1px solid #20303d}
+  .sub{position:static;display:block;box-shadow:none;border:0;border-radius:0;background:#0c151d;padding:0}
+  .sub a{color:#bcd;padding-left:30px}
+  .sub a:hover{background:#142029}
+  h1{font-size:22px}
+}
