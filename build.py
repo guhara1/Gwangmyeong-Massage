@@ -169,7 +169,7 @@ PAGE_TPL = """<!DOCTYPE html>
 <link rel="apple-touch-icon" href="/icon-180.png">
 <link rel="manifest" href="/site.webmanifest">
 <meta name="theme-color" content="#0d6e5a">
-<link rel="stylesheet" href="/css/style.css">
+{head_extra}<link rel="stylesheet" href="/css/style.css">
 {jsonld}
 </head>
 <body>
@@ -252,7 +252,7 @@ PAGE_TPL = """<!DOCTYPE html>
 """
 
 
-def render(path, title, description, keywords, body, crumbs, related, robots="index, follow"):
+def render(path, title, description, keywords, body, crumbs, related, robots="index, follow", head_extra=""):
     canonical = SITE_URL + path
     current = path
     out_dir = OUT + ("" if path == "/" else path)
@@ -274,6 +274,7 @@ def render(path, title, description, keywords, body, crumbs, related, robots="in
         cta=cta_html(),
         jsonld=jsonld(title, description, path, crumbs),
         year=YEAR,
+        head_extra=head_extra,
     )
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(page)
@@ -299,6 +300,7 @@ def main():
                 crumbs=p["crumbs"],
                 related=related_html(p.get("related_title", "함께 보면 좋은 안내"), p["related"]) if p.get("related") else "",
                 robots=p.get("robots", "index, follow"),
+                head_extra=p.get("head_extra", ""),
             )
         )
 
