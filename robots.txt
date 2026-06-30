@@ -11,5 +11,5 @@ Allow: /
 User-agent: bingbot
 Allow: /
 
-Sitemap: https://gwangmyeong-massage.pages.dev/sitemap.xml
-Sitemap: https://gwangmyeong-massage.pages.dev/rss.xml
+Sitemap: https://gwangmyeong-massage.netlify.app/sitemap.xml
+Sitemap: https://gwangmyeong-massage.netlify.app/rss.xml

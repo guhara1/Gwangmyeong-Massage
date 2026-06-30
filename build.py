@@ -17,7 +17,7 @@ YEAR = datetime.date.today().year
 # ---------------------------------------------------------------------------
 # 사이트 공통 설정
 # ---------------------------------------------------------------------------
-SITE_URL = "https://gwangmyeong-massage.pages.dev"   # 실제 도메인
+SITE_URL = "https://gwangmyeong-massage.netlify.app"   # 실제 도메인
 BRAND = "간다GO"
 PHONE = "0508-202-4719"
 PHONE_TEL = "tel:0508-202-4719"
@@ -84,7 +84,7 @@ def breadcrumb_html(crumbs):
     return '<nav class="breadcrumb" aria-label="breadcrumb">' + ' <span class="sep">›</span> '.join(parts) + "</nav>"
 
 
-def jsonld(page_title, description, url, crumbs):
+def jsonld(page_title, description, url, crumbs, rating=None, reviews=None):
     import json
     org = {
         "@context": "https://schema.org",
@@ -124,9 +124,122 @@ def jsonld(page_title, description, url, crumbs):
         ],
     }
     blocks = [webpage, breadcrumb, org]
+
+    # 후기·평점(별점) 스키마 — 페이지에 노출된 실제 후기 섹션과 1:1로 대응
+    if rating:
+        service = {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": f"{BRAND} {page_title.split('｜')[0].strip()}",
+            "serviceType": "방문형 출장마사지·홈타이 예약 안내",
+            "areaServed": {"@type": "City", "name": "경기도 광명시"},
+            "provider": {
+                "@type": "Organization",
+                "name": BRAND,
+                "url": SITE_URL + "/",
+                "telephone": PHONE,
+            },
+            "url": SITE_URL + url,
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": str(rating["value"]),
+                "reviewCount": str(rating["count"]),
+                "bestRating": "5",
+                "worstRating": "1",
+            },
+        }
+        if reviews:
+            service["review"] = [
+                {
+                    "@type": "Review",
+                    "author": {"@type": "Person", "name": r["author"]},
+                    "datePublished": r["date"],
+                    "reviewRating": {
+                        "@type": "Rating",
+                        "ratingValue": str(r["rating"]),
+                        "bestRating": "5",
+                        "worstRating": "1",
+                    },
+                    "reviewBody": r["body"],
+                }
+                for r in reviews
+            ]
+        blocks.append(service)
+
     return "\n".join(
         f'<script type="application/ld+json">\n{json.dumps(b, ensure_ascii=False, indent=2)}\n</script>'
         for b in blocks
+    )
+
+
+def stars(value):
+    """5점 만점 별점 문자열(★/½/☆)."""
+    full = int(float(value))
+    half = 1 if float(value) - full >= 0.5 else 0
+    empty = 5 - full - half
+    return "★" * full + ("½" if half else "") + "☆" * empty
+
+
+def reviews_html(rating, reviews):
+    """페이지에 실제로 노출되는 후기·평점 블록(스키마와 동일 내용)."""
+    if not rating or not reviews:
+        return ""
+    cards = "".join(
+        '<li class="review-card">'
+        '<div class="review-top">'
+        f'<span class="review-author">{esc(r["author"])}</span>'
+        f'<span class="review-stars" aria-label="별점 {r["rating"]}점 만점에 {r["rating"]}점">{stars(r["rating"])}</span>'
+        '</div>'
+        f'<p class="review-body">{esc(r["body"])}</p>'
+        f'<time class="review-date" datetime="{esc(r["date"])}">{esc(r["date"])}</time>'
+        '</li>'
+        for r in reviews
+    )
+    return (
+        '<section class="reviews" aria-label="이용 후기">'
+        '<div class="reviews-head">'
+        '<h2>이용 후기</h2>'
+        '<div class="rating-summary" role="img" '
+        f'aria-label="평균 별점 {rating["value"]}점, 후기 {rating["count"]}건">'
+        f'<span class="rating-score">{esc(str(rating["value"]))}</span>'
+        f'<span class="rating-stars" aria-hidden="true">{stars(rating["value"])}</span>'
+        f'<span class="rating-count">후기 {esc(str(rating["count"]))}건 기준</span>'
+        '</div>'
+        '</div>'
+        f'<ul class="review-list">{cards}</ul>'
+        '<p class="review-note">후기는 실제 이용 고객이 남긴 의견을 바탕으로 정리한 것으로, 개인에 따라 느낌이 다를 수 있습니다. '
+        '간다GO는 합법적인 방문형 관리 안내만 제공합니다.</p>'
+        '</section>'
+    )
+
+
+# 메인부터 모든 페이지에 노출되는 롱테일 지역·역세권 내부링크 허브
+AREA_LINKS = [
+    ("/gwangmyeong/gwangmyeong-dong-chuljangmassage/", "광명동 출장마사지", "광명사거리역·광명전통시장 생활권 방문 홈타이"),
+    ("/gwangmyeong/cheolsan-dong-chuljangmassage/", "철산동 출장마사지", "철산역·광명시청 상업지구 방문 홈타이"),
+    ("/gwangmyeong/haan-dong-chuljangmassage/", "하안동 출장마사지", "하안사거리·하안주공 생활권 방문 홈타이"),
+    ("/gwangmyeong/soha-dong-chuljangmassage/", "소하동 출장마사지", "소하상업지구·기아오토랜드 인근 방문 홈타이"),
+    ("/gwangmyeong/iljik-dong-chuljangmassage/", "일직동 출장마사지", "KTX 광명역 업무·숙박권 방문 홈타이"),
+    ("/gwangmyeong/hagon-dong-chuljangmassage/", "학온동 출장마사지", "가학·노온사·옥길 생활권 방문 홈타이"),
+    ("/gwangmyeong/gwangmyeong-station-chuljangmassage/", "광명역 출장마사지", "KTX·1호선 광명역 일직동권 방문 홈타이"),
+    ("/gwangmyeong/cheolsan-station-chuljangmassage/", "철산역 출장마사지", "7호선 철산역 중심 상권 방문 홈타이"),
+    ("/gwangmyeong/gwangmyeongsageori-station-chuljangmassage/", "광명사거리역 출장마사지", "7호선 광명사거리역 광명동 생활권 방문 홈타이"),
+]
+
+
+def area_links_html(current):
+    items = "".join(
+        f'<li><a href="{u}"><strong>{esc(t)}</strong><span>{esc(d)}</span></a></li>'
+        for u, t, d in AREA_LINKS
+        if u != current
+    )
+    return (
+        '<section class="area-links" aria-label="광명시 지역·역세권 출장마사지 전체 안내">'
+        '<h2>광명시 지역·역세권 출장마사지 전체 안내</h2>'
+        '<p class="area-links-lead">광명동·철산동·하안동·소하동·일직동·학온동과 '
+        '광명역·철산역·광명사거리역까지, 원하는 지역의 방문 가능 기준과 홈타이 예약 안내를 바로 확인하세요.</p>'
+        f'<ul class="area-grid">{items}</ul>'
+        '</section>'
     )
 
 
@@ -190,6 +303,8 @@ PAGE_TPL = """<!DOCTYPE html>
   <div class="container">
     {breadcrumb}
     {body}
+    {reviews}
+    {arealinks}
     {related}
     {cta}
   </div>
@@ -256,7 +371,8 @@ PAGE_TPL = """<!DOCTYPE html>
 """
 
 
-def render(path, title, description, keywords, body, crumbs, related, robots="index, follow", head_extra=""):
+def render(path, title, description, keywords, body, crumbs, related, robots="index, follow",
+           head_extra="", rating=None, reviews=None):
     canonical = SITE_URL + path
     current = path
     out_dir = OUT + ("" if path == "/" else path)
@@ -274,9 +390,11 @@ def render(path, title, description, keywords, body, crumbs, related, robots="in
         nav=nav_html(current),
         breadcrumb=breadcrumb_html(crumbs),
         body=body,
+        reviews=reviews_html(rating, reviews),
+        arealinks=area_links_html(current),
         related=related,
         cta=cta_html(),
-        jsonld=jsonld(title, description, path, crumbs),
+        jsonld=jsonld(title, description, path, crumbs, rating=rating, reviews=reviews),
         year=YEAR,
         head_extra=head_extra,
     )
@@ -305,6 +423,8 @@ def main():
                 related=related_html(p.get("related_title", "함께 보면 좋은 안내"), p["related"]) if p.get("related") else "",
                 robots=p.get("robots", "index, follow"),
                 head_extra=p.get("head_extra", ""),
+                rating=p.get("rating"),
+                reviews=p.get("reviews"),
             )
         )
 

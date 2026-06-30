@@ -41,10 +41,12 @@ python3 build.py
 실행하면 각 페이지의 `index.html`, `sitemap.xml`, `robots.txt`가 생성되고
 description 80자 점검 결과가 출력됩니다.
 
-## 도메인 / 배포 (Cloudflare Pages)
+## 도메인 / 배포 (Netlify)
 
-- 도메인은 `https://gwangmyeong-massage.pages.dev` 기준입니다.
-  바꾸려면 `build.py`의 `SITE_URL`만 교체 후 다시 빌드하세요(canonical·OG·sitemap 일괄 반영).
+- 도메인은 `https://gwangmyeong-massage.netlify.app` 기준입니다.
+  바꾸려면 `build.py`의 `SITE_URL`만 교체 후 다시 빌드하세요(canonical·OG·sitemap·rss·robots 일괄 반영).
+  `indexnow.py`·`google_indexing.py`도 `SITE_URL`을 가져오므로 함께 반영됩니다.
+- 과거 슬러그·구도메인 리다이렉트는 `_redirects`(Netlify 네이티브 형식)로 처리합니다.
 - **메인페이지는 루트 `/`** 입니다. 도메인을 누르면 바로 메인이 열립니다.
   과거 슬러그 `/gwangmyeong-chuljangmassage/`는 `_redirects`로 루트(301)로 보냅니다.
 - 파비콘: `favicon.svg`, `favicon.ico`, `favicon-32.png`, `icon-180/192/512.png`,
@@ -67,6 +69,11 @@ python3 google_indexing.py          # 구글 Indexing API (서비스 계정 필�
 ## SEO 적용 메모
 
 - 스키마: `WebPage` + `BreadcrumbList` + `Organization` (전 페이지)
+  - 콘텐츠/안내 페이지는 `Service` + `AggregateRating`(평점·후기 수) + `Review`(별점·작성자·내용) 추가.
+    스키마는 **페이지에 실제로 노출된 후기 섹션과 1:1 대응**하도록 생성합니다(`build.py`의 `reviews_html`).
+  - 후기·평점 데이터는 `pages.py`의 각 페이지 `rating`/`reviews` 키에서 관리합니다.
+    개인정보·정책 페이지(`/privacy/`, `/contact/`)에는 후기 스키마를 넣지 않습니다.
 - H1 1개 + 의미 단위 H2 구조, 페이지별 고유 생활권 본문
 - 메인↔행정동↔역세권 내부링크 설계 반영
-- 합법적 방문형 안내 문구만 사용(불법·선정·허위 후기·과장 표현 배제)
+  - 전 페이지 하단에 **롱테일 지역·역세권 내부링크 허브**(`area_links_html`)를 자동 삽입해 상호 연결을 강화했습니다.
+- 합법적 방문형 안내 문구만 사용(불법·선정·과장 표현 배제). 후기는 이용 의견 기반 안내 문구를 함께 표기합니다.
