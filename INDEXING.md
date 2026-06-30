@@ -40,7 +40,7 @@
 
 ## 2단계 — IndexNow 즉시 통보 (Bing · Naver · Yandex · Seznam)
 
-키 파일이 `https://gwangmyeong-massage.pages.dev/<KEY>.txt` 로 게시되어 있어야 합니다(빌드 시 자동 생성).
+키 파일이 `https://gwangmyeong-massage.netlify.app/<KEY>.txt` 로 게시되어 있어야 합니다(빌드 시 자동 생성).
 
 ```bash
 python3 indexnow.py                 # sitemap의 모든 URL 통보
